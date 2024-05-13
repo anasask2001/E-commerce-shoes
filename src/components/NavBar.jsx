@@ -46,7 +46,8 @@ export default function App() {
   const navigate = useNavigate();
 
   const searchcontrol = () => {
-    if (takesearch != "") {
+    if (takesearch 
+      != "") {
       const searchdata = Products.filter((x) =>
         x.name.toLowerCase().includes(takesearch.toLowerCase())
       );
