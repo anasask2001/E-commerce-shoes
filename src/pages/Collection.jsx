@@ -20,15 +20,15 @@ const{Products,setProducts}=useContext(Data)
 
       <MDBCard  style={{width:'250px',  marginBottom:'10px', position:'relative'}} >
            <div className='bg-image hover-zoom'>
-    <MDBCardImage className='w70' src={x.imgUrl} position='top' alt='...' />
+    <MDBCardImage className='w70' src={x.ProductImage} position='top' alt='...' />
     </div>
       <MDBCardBody>
-        <MDBCardTitle>{x.name}</MDBCardTitle>
-        <p>{'₹'+x.price}</p>
+        <MDBCardTitle>{x.ProductTitle}</MDBCardTitle>
+        <p>{'₹'+x.ProductPrice}</p>
         <MDBCardText>
-        A shoe is an item of footwear intended to protect and comfort the human foot. 
+       {x.ProductDescription} 
         </MDBCardText>
-        <MDBBtn color='black' style={{position:'absolute', bottom:'10px'}} onClick={()=>navigate(`/${x.id}`)}>show</MDBBtn>
+        <MDBBtn color='black' style={{position:'absolute', bottom:'10px'}} onClick={()=>navigate(`/${x._id}`)}>show</MDBBtn>
       </MDBCardBody>
     </MDBCard>
 

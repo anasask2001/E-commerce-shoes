@@ -1,51 +1,74 @@
 import React, { useContext, useState } from "react";
 import { MDBBtn } from "mdb-react-ui-kit";
 import { Container } from "react-bootstrap";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import icon1 from "../Assets/Iconmome-removebg-preview.png";
 import { Data } from "../App";
 import Profile from "../pages/Profile";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 function Login() {
   const {
-    setIsAdmin,
-    isadmin,
-    users,
-    isuser,
-    setisuser,
+    // setIsAdmin,
+    // isadmin,
+    // users,
+    // isuser,
+    // setisuser,
     isloged,
     setisloged,
-    setcart,
-    setadminnav
+    // setcart,
+    // setadminnav
   } = useContext(Data);
-  const [email, setemail] = useState("");
-  const [pass, setpass] = useState("");
-  const navigate = useNavigate();
 
-  const loginuser = () => {
-    const admin = users.find(
-      (x) => x.useremail == email && x.userpass == pass && x.role == "admin"
-    );
-    if(admin){
-      setadminnav(admin)
-      navigate('/adminhome')
-      return true;
-    }
-    const finduser = users.find(
-      (x) => x.useremail == email && x.userpass == pass
-    );
-    if (finduser) {
-      setisuser(finduser);
-      setisloged(true);
-      if (finduser?.cart) {
-        setcart(finduser.cart);
-      }
 
-      navigate("/");
-    } else {
-      alert("not found this useraccount");
-    }
-  };
+  const [ login,setlogin]=useState([])
+  const navigate = useNavigate()
+
+const Loginclick = async (e)=>{
+  e.preventDefault();
+  try {
+    const response = await axios.post("http://localhost:3020/api/users/login",{
+      Email:login.Email,
+      Password:login.Password
+    })
+
+  localStorage.setItem("Userdata",JSON.stringify(response.data.details))
+
+    console.log(response.data.details);
+    setisloged(response.data.details);
+    toast.success(response.data.message)
+    navigate("/")
+
+  } catch (error) {
+    toast.error(error.response.data.message)
+  }
+
+}
+  // const loginuser = () => {
+  //   const admin = users.find(
+  //     (x) => x.useremail == email && x.userpass == pass && x.role == "admin"
+  //   );
+  //   if(admin){
+  //     setadminnav(admin)
+  //     navigate('/adminhome')
+  //     return true;
+  //   }
+  //   const finduser = users.find(
+  //     (x) => x.useremail == email && x.userpass == pass
+  //   );
+  //   if (finduser) {
+  //     setisuser(finduser);
+  //     setisloged(true);
+  //     if (finduser?.cart) {
+  //       setcart(finduser.cart);
+  //     }
+
+  //     navigate("/");
+  //   } else {
+  //     alert("not found this useraccount");
+  //   }
+  // };
 
   return (
     <>
@@ -82,7 +105,7 @@ function Login() {
               }}
               type="text"
               placeholder="Email"
-              onChange={(e) => setemail(e.target.value)}
+              onChange={(e) => setlogin({...login,Email:e.target.value})}
             />
             <input
               style={{
@@ -94,11 +117,11 @@ function Login() {
               }}
               type="password"
               placeholder="Password"
-              onChange={(e) => setpass(e.target.value)}
+              onChange={(e) => setlogin({...login,Password:e.target.value})}
             />
             <br />
 
-            <MDBBtn className="text-ligth" color="black" onClick={loginuser}>
+            <MDBBtn className="text-ligth" color="black" onClick={Loginclick}>
               login
             </MDBBtn>
 

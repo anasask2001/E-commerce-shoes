@@ -46,9 +46,9 @@ function Profile() {
 <TableBody style={{display:'flex',justifyContent:'center',alignItems:'center',flexDirection:'column'}}>
 <tr  >
               
-              <h4 className='fw-bold mb-1'>Name:{isuser.username}</h4>
-              <h5 className='text-muted mb-0'>Email:{isuser.useremail}</h5>
-              <h6 className='text-muted mb-0'>Password:{isuser.userpass}</h6>
+              <h4 className='fw-bold mb-1'>Name:{isloged.UserName}</h4>
+              <h5 className='text-muted mb-0'>Email:{isloged.Email}</h5>
+             
       </tr>
 
 </TableBody>

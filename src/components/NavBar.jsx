@@ -30,6 +30,7 @@ import { IoIosLogOut } from "react-icons/io";
 import { FaUsers } from "react-icons/fa";
 import { MdOutlineProductionQuantityLimits } from "react-icons/md";
 import { IoHome } from "react-icons/io5";
+import { FaHeart } from "react-icons/fa";
 
 export default function App() {
   const [openBasic, setOpenBasic] = useState(false);
@@ -183,6 +184,15 @@ export default function App() {
                     </MDBInputGroup>
                   </div>
 
+
+                  <MDBNavbarItem>
+                    <MDBNavbarLink>
+                    <NavLink style={{ color: "black" }} to="/wishlist">
+                    <FaHeart style={{color:"black"}} />
+                     </NavLink>
+                    </MDBNavbarLink>
+                  </MDBNavbarItem>
+
                   <MDBNavbarItem>
                     <MDBNavbarLink>
                       <MDBSwitch  className="App-header" style={{backgroundColor:'black'}} id="darkmode-toggle" onClick={toggletheme} />
@@ -193,7 +203,7 @@ export default function App() {
                     <MDBNavbarLink>
                       <NavLink
                         style={{ color: "black" }}
-                        to={isuser ? "/cart" : "/login"}
+                        to={isloged ? "/cart" : "/login"}
                       >
                         <FaShoppingCart  className="App-header" />
                       </NavLink>
@@ -204,7 +214,7 @@ export default function App() {
                     <MDBNavbarLink>
                       <NavLink style={{ color: "black" }} to="/login">
 
-                        {!isuser ? (
+                        {!isloged ? (
                           <>
                             <FaUser  className="App-header" />
                          
@@ -212,7 +222,7 @@ export default function App() {
                         ) : (
                           <div >
                    
-                   <p><GiHieroglyphLegs />{isuser?.username}</p>
+                   <p><GiHieroglyphLegs />{isloged?.username}</p>
                    
                
                        

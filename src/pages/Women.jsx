@@ -13,23 +13,23 @@ function Women() {
           
           <div  style={{display:'flex',flexWrap:'wrap',justifyContent:'space-between', width:'100%'}}>
            
-          {Products.map((y)=>{if(y.category==='women'){
+          {Products.map((y)=>{if(y.ProductCategory==='WOMEN' ||  y.ProductCategory ==='KIDS_GIRLS' ){
             return(
        <MDBCard  style={{width:'250px', marginBottom:'10px',position:'relative'}}>
         <div className='bg-image hover-zoom'>
-        <MDBCardImage className='w70' src={y.imgUrl} position='top' alt='...' />
+        <MDBCardImage className='w70' src={y.ProductImage} position='top' alt='...' />
         </div>
    
     <MDBCardBody >
-      <MDBCardTitle>{y.name}</MDBCardTitle>
-      <p>{'₹'+y.price}</p>
+      <MDBCardTitle>{y.ProductTitle}</MDBCardTitle>
+      <p>{'₹'+y.ProductPrice}</p>
 
       <MDBCardText>
       A shoe is an item of footwear intended to protect and comfort the human foot. 
      
       </MDBCardText>
      <div >
-     <MDBBtn color='black' style={{position:'absolute', bottom:'10px'}} onClick={()=>navigate(`/${y.id}`)}>show</MDBBtn>
+     <MDBBtn color='black' style={{position:'absolute', bottom:'10px'}} onClick={()=>navigate(`/${y._id}`)}>show</MDBBtn>
      </div>
     </MDBCardBody>
   </MDBCard>)

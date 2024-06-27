@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import Nav from "./components/NavBar";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import Login from "./User/Login";
@@ -13,7 +13,6 @@ import Footer from "./components/Footer";
 import Contact from "./pages/Contact";
 import Ourstory from "./pages/Ourstory";
 import Cart from "./pages/Cart";
-import items from "./components/Products";
 import Singleitem from "./pages/Singleitem";
 import Payment from "./pages/Payment";
 import Search from "./pages/Search";
@@ -32,15 +31,29 @@ import Updateitem from "./Admin/Updateitem";
 import AddProduct from "./Admin/AddProduct";
 import { Logout } from "./Admin/Logout";
 import { Usersingle } from "./Admin/Usersingle";
-
+import axios from 'axios'
+import Wishlist from "./pages/Wishlist";
 export const Data = createContext();
 function App() {
   const [isuser, setisuser] = useState(null);
-  const [Products, setProducts] = useState(items);
+  const [Products, setProducts] = useState([]);
+
   const [isloged, setisloged] = useState(false);
   const [cart, setcart] = useState([]);
   const [search, setsearch] = useState([]);
   const [wishlist, setWishlist] = useState([]);
+
+const fetchData = async () =>{
+const response= await axios.get("http://localhost:3020/api/users/products");
+setProducts(response.data.Product)
+}
+useEffect(() => {     
+      
+  fetchData();
+}, [])
+
+
+
 
   const [order, setorder] = useState();
 
@@ -66,6 +79,8 @@ function App() {
   const [adminnav, setadminnav] = useState(null);
 
   const navigate = useNavigate();
+
+
   const register = (name, email, pass, confirmpass) => {
     if (
       validateEmail(email) &&
@@ -103,6 +118,9 @@ function App() {
       toast.error("Try Again");
     }
   };
+
+
+
 
   return (
     <>
@@ -158,6 +176,7 @@ function App() {
             <Route path="/addproduct" element={<AddProduct />} />
             <Route path="/Usersingle/:id" element={<Usersingle />} />
             <Route path="/Logout" element={<Logout />} />
+            <Route path="/wishlist" element={<Wishlist/>}/>
           </Routes>
           <Footer />
         </header>
