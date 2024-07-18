@@ -1,16 +1,7 @@
-import React from 'react';
-import Stack from '@mui/material/Stack';
-import Box from '@mui/material/Box';
-
-
+import React from "react";
 
 function Sale() {
-
-  return (
-    <>
- 
-    </>
-  )
+  return <></>;
 }
 
-export default Sale
+export default Sale;

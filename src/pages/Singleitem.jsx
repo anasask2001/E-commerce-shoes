@@ -1,106 +1,131 @@
-import React, { useEffect, useState } from "react";
-import { NavLink, useNavigate, useParams } from "react-router-dom";
-import { useContext } from "react";
-import { Data } from "../App";
-import { FaCartShopping } from "react-icons/fa6";
+import React, { useContext, useEffect, useState } from "react";
+import { NavLink, useParams } from "react-router-dom";
+import { FaHeart, FaShoppingCart } from "react-icons/fa";
 import { MdFlashOn } from "react-icons/md";
-import {
-  MDBCard,
-  MDBCardBody,
-  MDBCardTitle,
-  MDBCardText,
-  MDBCardImage,
-  MDBBtn,
-} from "mdb-react-ui-kit";
-import axios from "axios";
-import { FaHeart } from "react-icons/fa";
-
+import { MDBBtn } from "mdb-react-ui-kit";
+import { useDispatch, useSelector } from "react-redux";
+import { Addtocart, Addtowishlist, deletewishlist, getCartlength, showitembyid } from "../Redux/Thunk/Thunk";
+import Footer from "../components/Footer";
 
 function Singleitem() {
-  const nav=useNavigate()
-
-  const { Products, cart, setcart,isuser, isloged } = useContext(Data);
   const { id } = useParams();
-  const[showitem,setshowitem]=useState('')
+ 
   const [isInWishlist, setIsInWishlist] = useState(false);
 
+  const [isLoading, setIsLoading] = useState(false);
 
-  // let test = Products.find((x) => x.id == id);
-  const Findproductsingle = async(id)=>{
+  const Dispatch = useDispatch()
 
-    const response = await axios.get(`http://localhost:3020/api/users/products/${id}`)
-    console.log(response);
-    setshowitem(response.data.product)
-    console.log(showitem);
-  }
+  const userid = localStorage.getItem("id");
 
-console.log(showitem);
-  useEffect(()=>{
-Findproductsingle(id)
-  },[])
 
-  const addtowishlist = async (id)=>{
+
+//add to cart
+  const addToCart = async (id) => {
+   Dispatch(Addtocart({userid,id}))
+   Dispatch(getCartlength(userid))
    
-  try {
-    const response  = await axios.post(`http://localhost:3020/api/users/${isloged._id}/wishlist/${id}`)
-    console.log(response.data);
-  } catch (error) {
-    console.log(error.response);
-  }
-  }
-  
-  // const [item, setitem] = useState(test);
-
-  const addcart = async(id) => {
-    try {
-      const response  = await axios.post(`http://localhost:3020/api/users/${isloged._id}/cart/${id}`)
-      alert(response.data)
-    } catch (error) {
-      
-      
-    }
- 
-
   };
+  const showcart = useSelector((state) => state.ApiSlice.cart);
+  console.log(showcart);
+  
+//add to wishlist
+const addToWishlist = async (id) => {
+  Dispatch(Addtowishlist({userid,id}))
+ };
+
+ //deletewishlist
+ const removeFromWishlist = async (id) => {
+  Dispatch(deletewishlist({userid,id}))
+    
+ };
+
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+      
+        Dispatch(showitembyid(id))
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [id, userid]);
+
+
+const showitem = useSelector(state=>state.ApiSlice.SingleProduct)
+
 
   return (
-
-    <div className="container" style={{ minHeight: "90vh" }}>
-  <div className="row">
-    <div className="col-12 col-md-6">
-      
-      <img  src={showitem?.ProductImage} className="img-fluid" alt={showitem?.ProductTitle} />
-    </div>
-    <div
-      className="col-12 col-md-6 d-flex align-items-center"
-      style={{ padding: "20px" }}
-    >
-      <div>
-        <h3>{showitem.ProductTitle}</h3>
-        <h6>{"₹" + showitem.ProductPrice}</h6>
-        <p>
-          {showitem.ProductDescription}
-        </p>
-      
-        <FaHeart className="mx-2" style={{color:"black",fontSize:'30px'}} onClick={()=>(addtowishlist(showitem._id))} />  <MDBBtn color="black" onClick={() => addcart(showitem._id)}>
-          <FaCartShopping />
-          ADD TO CART
-        </MDBBtn>{" "}
-         
+    <>
     
-
-
-        <NavLink to="/payment">
-          <MDBBtn color="black">
-            <MdFlashOn />
-            BUY NOW
-          </MDBBtn>
-        </NavLink>
-      </div>
+    <div className="container" style={{ minHeight: "90vh" }}>
+      {isLoading ? (
+        <div
+          className="d-flex justify-content-center align-items-center"
+          style={{ minHeight: "60vh" }}
+        >
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      ) : (
+        <div className="row">
+          <div className="col-12 col-md-6">
+            <img
+              src={showitem?.ProductImage}
+              className="img-fluid"
+              alt={showitem?.ProductTitle}
+            />
+          </div>
+          <div
+            className="col-12 col-md-6 d-flex align-items-center"
+            style={{ padding: "20px" }}
+          >
+            <div>
+              <h3>{showitem?.ProductTitle}</h3>
+              <h6>{"₹" + showitem?.ProductPrice}</h6>
+              <p>{showitem?.ProductDescription}</p>
+              <FaHeart
+                className="mx-1"
+                style={{
+                  color: isInWishlist ? "red" : "black",
+                  fontSize: "30px",
+                  cursor: "pointer",
+                }}
+                onClick={() =>
+                  isInWishlist
+                    ? removeFromWishlist(showitem._id)
+                    : addToWishlist(showitem._id)
+                }
+              />
+              <MDBBtn
+                className="mx-2"
+                color="black"
+                onClick={() => addToCart(showitem._id)}
+              >
+                <FaShoppingCart />
+                ADD TO CART
+              </MDBBtn>
+           
+                <MDBBtn color="black">
+                  <MdFlashOn />
+                  BUY NOW
+                </MDBBtn>
+              
+            </div>
+          </div>
+        </div>
+      )}
     </div>
-  </div>
-</div>
-
+    <Footer/>
+    </>
   );
 }
 

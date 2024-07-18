@@ -1,5 +1,4 @@
-import React, { useContext, useState } from "react";
-import icone from "../Assets/Iconmome-removebg-preview.png";
+import React, { useContext, useEffect, useState } from "react";
 import {
   MDBContainer,
   MDBNavbar,
@@ -10,229 +9,194 @@ import {
   MDBNavbarItem,
   MDBNavbarLink,
   MDBBtn,
-  MDBDropdown,
-  MDBDropdownToggle,
-  MDBDropdownMenu,
-  MDBDropdownItem,
-  MDBCollapse,
   MDBInputGroup,
+  MDBCollapse,
+  MDBSwitch
 } from "mdb-react-ui-kit";
-import { GiHieroglyphLegs } from "react-icons/gi";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { FaUser } from "react-icons/fa";
-import { FaShoppingCart } from "react-icons/fa";
-import "./NavBar.css";
-import Search from "../pages/Search";
+import { FaUser, FaShoppingCart, FaHeart } from "react-icons/fa";
+import { RiLoginBoxFill } from "react-icons/ri";
+import axios from "axios";
 import { Data } from "../App";
-import { MDBSwitch } from "mdb-react-ui-kit";
+import "./NavBar.css";
 import "../Admin/Adminhome.css";
-import { IoIosLogOut } from "react-icons/io";
-import { FaUsers } from "react-icons/fa";
-import { MdOutlineProductionQuantityLimits } from "react-icons/md";
-import { IoHome } from "react-icons/io5";
-import { FaHeart } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { getCartlength } from "../Redux/Thunk/Thunk";
+import { FaBoxOpen } from "react-icons/fa";
 
-export default function App() {
+
+export default function NavBar() {
   const [openBasic, setOpenBasic] = useState(false);
-  const [takesearch, settakesearch] = useState("");
-  const {
-    Products,
-    setsearch,
-    isuser,
-    setisuser,
-    isloged,
-    adminnav,
-    setadminnav,
-  } = useContext(Data);
+  const { Search1, setSearch1, setResult1 } = useContext(Data);
   const navigate = useNavigate();
+  const username = localStorage.getItem("username");
+  const userid = localStorage.getItem("id");
+  const admininfo = localStorage.getItem("admin");
 
-  const searchcontrol = () => {
-    if (takesearch 
-      != "") {
-      const searchdata = Products.filter((x) =>
-        x.name.toLowerCase().includes(takesearch.toLowerCase())
-      );
-      setsearch(searchdata);
-      navigate("/search");
-    }
 
-  };
-  const setdarkmode =()=>{
-    document.querySelector('header').setAttribute('data-theme' ,'dark')
-  }
-  const setligthmode =()=>{
-    document.querySelector('header').setAttribute('data-theme' ,'ligth')
-  }
+  const dispatch = useDispatch();
+  const cartCount = useSelector((state) => state.ApiSlice.cartlength);
+
+  useEffect(() => {
+    dispatch(getCartlength(userid));
+    
+  }, [dispatch,userid]);
+  
   
 
+  const setDarkMode = () => {
+    document.querySelector("header").setAttribute("data-theme", "dark");
+  };
 
+  const setLightMode = () => {
+    document.querySelector("header").setAttribute("data-theme", "light");
+  };
 
-  const toggletheme=(e)=>{
-    if(e.target.checked)setdarkmode();
-    else setligthmode();
-  }
+  const toggleTheme = (e) => {
+    if (e.target.checked) {
+      setDarkMode();
+    } else {
+      setLightMode();
+    }
+  };
+
+  const fetchSearch = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3020/api/users/products/category/${Search1}`
+      );
+      navigate("/search");
+      setResult1(response.data.category);
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  };
 
   return (
     <>
-
-      <div  >
-        {!adminnav ? (
-
-
-
-          <MDBNavbar   expand="lg">
-            <MDBContainer  fluid>
-              <MDBNavbarBrand >
+      <div>
+        {!admininfo ? (
+          <MDBNavbar expand="lg">
+            <MDBContainer fluid>
+              <MDBNavbarBrand>
                 <Link style={{ color: "black" }} to="/">
-                  <img  src='https://th.bing.com/th/id/OIP.zKH4xQIcRsdxitKagAA3BgAAAA?rs=1&pid=ImgDetMain' height="30" alt="" loading="lazy" />
-                 <span  className="App-header">SHOEZONE</span> 
+                  <img
+                    src="https://th.bing.com/th/id/OIP.zKH4xQIcRsdxitKagAA3BgAAAA?rs=1&pid=ImgDetMain"
+                    height="30"
+                    alt="Logo"
+                    loading="lazy"
+                  />
+                  <span className="App-header">SHOEZONE</span>
                 </Link>
               </MDBNavbarBrand>
-              
-              <MDBNavbarToggler 
-      
-          aria-controls='navbarSupportedContent'
-          aria-expanded='false'
-          aria-label='Toggle navigation'
-          onClick={() => setOpenBasic(!openBasic)}
-        >
-          <MDBIcon     className="App-header" icon='bars' fas />
-        </MDBNavbarToggler>
+
+              <MDBNavbarToggler
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+                onClick={() => setOpenBasic(!openBasic)}
+              >
+                <MDBIcon className="App-header" icon="bars" fas />
+              </MDBNavbarToggler>
 
               <MDBCollapse navbar open={openBasic}>
                 <MDBNavbarNav
-                  className="mr-auto mb-2 mb-lg-0 "
+                  className="mr-auto mb-2 mb-lg-0"
                   style={{
                     display: "flex",
                     justifyContent: "space-around",
                     paddingTop: "9px",
                   }}
                 >
-                  <MDBNavbarItem>
-                    <MDBNavbarLink
-                      aria-current="page"
-                      style={{ textDecoration: "none" }}
-                    >
-                      <NavLink  style={{ color: "black" }} to="/men">
-                       <span className="App-header"  > MEN</span>
-                      </NavLink>
-                    </MDBNavbarLink>
-                  </MDBNavbarItem>
-                  <MDBNavbarItem>
-                    <MDBNavbarLink aria-current="page">
-                      <NavLink style={{ color: "black" }} to="/women">
-                      <span className="App-header"  > WOMEN</span>
-                      </NavLink>
-                    </MDBNavbarLink>
-                  </MDBNavbarItem>
-                  <MDBNavbarItem>
-                    <MDBNavbarLink aria-current="page">
-                      <NavLink style={{ color: "black" }} to="/collection">
-                      <span className="App-header"  > COLLECTION</span>
-                      </NavLink>
-                    </MDBNavbarLink>
-                  </MDBNavbarItem>
-
-                  <MDBNavbarItem>
-                    <MDBNavbarLink aria-current="page">
-                      <NavLink style={{ color: "black" }} to="/lookbook">
-                      <span className="App-header"  >LOOKBOOK</span>
-                      </NavLink>
-                    </MDBNavbarLink>
-                  </MDBNavbarItem>
-
-                  <MDBNavbarItem>
-                    <MDBNavbarLink aria-current="page">
-                      <NavLink style={{ color: "black" }} to="/sale">
-                      <span className="App-header"  > SALE</span>
-                      </NavLink>
-                    </MDBNavbarLink>
-                  </MDBNavbarItem>
-
-                  <MDBNavbarItem>
-                    <MDBNavbarLink>
-                      <NavLink style={{ color: "black" }} to="/ourstory">
-                      <span className="App-header"  >OURSTORY</span>
-                      </NavLink>
-                    </MDBNavbarLink>
-                  </MDBNavbarItem>
-
-                  <MDBNavbarItem>
-                    <MDBNavbarLink>
-                      <NavLink style={{ color: "black" }} to="/contact">
-                      <span className="App-header"  >CONTACT</span>
-                      </NavLink>
-                    </MDBNavbarLink>
-                  </MDBNavbarItem>
-
+                  {[
+                    "men",
+                    "women",
+                    "collection",
+                    "lookbook",
+                    "ourstory",
+                    "contact",
+                  ].map((link) => (
+                    <MDBNavbarItem key={link}>
+                      <MDBNavbarLink
+                        aria-current="page"
+                        style={{ textDecoration: "none" }}
+                      >
+                        <NavLink style={{ color: "black" }} to={`/${link}`}>
+                          <span className="App-header">
+                            {link.toUpperCase()}
+                          </span>
+                        </NavLink>
+                      </MDBNavbarLink>
+                    </MDBNavbarItem>
+                  ))}
                   <div>
                     <MDBInputGroup className="d-flex w-auto mb-3">
                       <input
-                        type="Search"
+                        type="search"
                         className="form-control"
-                        placeholder="Search products.."
+                        placeholder="Search products..."
                         aria-label="Search"
-                        onChange={(e) => settakesearch(e.target.value)}
+                        onChange={(e) => setSearch1(e.target.value)}
                       />
                       <MDBBtn
                         color="black"
-                        onClick={searchcontrol}
+                        onClick={fetchSearch}
                         style={{ boxShadow: "none" }}
                       >
                         Search
                       </MDBBtn>
                     </MDBInputGroup>
                   </div>
-
-
                   <MDBNavbarItem>
                     <MDBNavbarLink>
-                    <NavLink style={{ color: "black" }} to="/wishlist">
-                    <FaHeart style={{color:"black"}} />
-                     </NavLink>
+                      <NavLink to={userid ? "/wishlist" : "/login"}>
+                        <FaHeart className="App-header" />
+                      </NavLink>
                     </MDBNavbarLink>
                   </MDBNavbarItem>
-
                   <MDBNavbarItem>
                     <MDBNavbarLink>
-                      <MDBSwitch  className="App-header" style={{backgroundColor:'black'}} id="darkmode-toggle" onClick={toggletheme} />
+                      <MDBSwitch
+                        className="App-header"
+                        id="darkmode-toggle"
+                        onClick={toggleTheme}
+                      />
                     </MDBNavbarLink>
                   </MDBNavbarItem>
-
+                  <MDBNavbarItem>
+      <MDBNavbarLink>
+        <NavLink to={userid ? `/userorders/${userid}` : "/login"}>
+          {userid && <FaBoxOpen className="App-header" />}
+        </NavLink>
+      </MDBNavbarLink>
+    </MDBNavbarItem>
+                
                   <MDBNavbarItem>
                     <MDBNavbarLink>
                       <NavLink
                         style={{ color: "black" }}
-                        to={isloged ? "/cart" : "/login"}
+                        to={userid ? "/cart" : "/login"}
                       >
-                        <FaShoppingCart  className="App-header" />
+                        <FaShoppingCart className="App-header" />
+                        {username && (
+                          <span className="badge">{cartCount}</span>
+                        )}
                       </NavLink>
                     </MDBNavbarLink>
                   </MDBNavbarItem>
-
                   <MDBNavbarItem>
                     <MDBNavbarLink>
-                      <NavLink style={{ color: "black" }} to="/login">
-
-                        {!isloged ? (
-                          <>
-                            <FaUser  className="App-header" />
-                         
-                          </>
+                      <NavLink  style={{ color: "black" }} to="/login">
+                        {!username ? (
+                          <FaUser className="App-header" />
                         ) : (
-                          <div >
-                   
-                   <p><GiHieroglyphLegs />{isloged?.username}</p>
-                   
-               
-                       
-                     
-                       
-                         </div>
+                          <div>
+                            <p className="App-header">
+                              
+                              <RiLoginBoxFill className="App-header" />
+                            </p>
+                          </div>
                         )}
-
-
-
                       </NavLink>
                     </MDBNavbarLink>
                   </MDBNavbarItem>
@@ -241,50 +205,57 @@ export default function App() {
             </MDBContainer>
           </MDBNavbar>
         ) : (
-          //==================admin
-          <div class="button-container">
-            <button class="button">
-              <NavLink to={"/adminhome"}>
-                <span style={{ color: "black" }}>
-                  <IoHome />
-                  Home
-                </span>
-              </NavLink>
-            </button>
-
-            <button class="button">
-              <NavLink to={"/userscheck"}>
-                {" "}
-                <span style={{ color: "black" }}>
-                  <FaUsers />
-                  Users
-                </span>
-              </NavLink>
-            </button>
-
-            <div>
-              <button class="button">
-                <NavLink to={"/adminproduct"}>
-                  {" "}
-                  <span style={{ color: "black" }}>
-                    <MdOutlineProductionQuantityLimits />
-                    Products
-                  </span>
-                </NavLink>
-              </button>
-            </div>
-            <button class="button">
-              <NavLink to={"/Logout"}>
-                <span style={{ color: "black" }}>
-                  <IoIosLogOut />
-                  Logout
-                </span>
-              </NavLink>
-            </button>
+        
+          <div className="admin-dashboard float-left">
+            <MDBNavbar expand="lg" dark bgColor="dark" className="admin-sidebar">
+              <MDBContainer fluid>
+                <MDBNavbarNav className="flex-column">
+                  <MDBNavbarItem>
+                    <MDBNavbarLink>
+                      <Link to="/adminhome" className="text-white">
+                        <MDBIcon fas icon="home" className="me-2" />
+                        Admin Home
+                       </Link>
+                    </MDBNavbarLink>
+                  </MDBNavbarItem>
+                  <MDBNavbarItem>
+                    <MDBNavbarLink>
+                      <Link to="/userscheck" className="text-white">
+                        <MDBIcon fas icon="users" className="me-2" />
+                        Users
+                      </Link>
+                    </MDBNavbarLink>
+                  </MDBNavbarItem>
+                  <MDBNavbarItem>
+                    <MDBNavbarLink>
+                      <Link to="/adminproduct" className="text-white">
+                        <MDBIcon fas icon="box" className="me-2" />
+                        Products
+                      </Link>
+                    </MDBNavbarLink>
+                  </MDBNavbarItem>
+                  <MDBNavbarItem>
+                    <MDBNavbarLink>
+                      <Link to="/checkordersdetiles" className="text-white">
+                        <MDBIcon fas icon="shopping-cart" className="me-2" />
+                        Orders
+                      </Link>
+                    </MDBNavbarLink>
+                  </MDBNavbarItem>
+                  <MDBNavbarItem>
+                    <MDBNavbarLink>
+                      <Link to="/Logout" className="text-white">
+                        <MDBIcon fas icon="user" className="me-2" />
+                        Admin Profile
+                      </Link>
+                    </MDBNavbarLink>
+                  </MDBNavbarItem>
+                </MDBNavbarNav>
+              </MDBContainer>
+            </MDBNavbar>
           </div>
         )}
       </div>
- 
     </>
   );
 }

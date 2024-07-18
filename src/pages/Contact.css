@@ -1,9 +1,8 @@
-.size{
-    width: 20%;
-    height: 40px;
+.size {
+  height: 50px;
+  width: 650px;
 }
 
-.size1{
-    height: 80px;
-    width: 20%;
+.text1 {
+  opacity: 0.5;
 }

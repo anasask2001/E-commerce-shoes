@@ -1,78 +1,54 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { MDBBtn } from "mdb-react-ui-kit";
 import { Container } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import icon1 from "../Assets/Iconmome-removebg-preview.png";
-import { Data } from "../App";
 import Profile from "../pages/Profile";
-import axios from "axios";
-import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { adminlogin, userlogin } from "../Redux/Thunk/Thunk";
+import Footer from "../components/Footer";
+
 
 function Login() {
-  const {
-    // setIsAdmin,
-    // isadmin,
-    // users,
-    // isuser,
-    // setisuser,
-    isloged,
-    setisloged,
-    // setcart,
-    // setadminnav
-  } = useContext(Data);
+  const [login, setLogin] = useState({ Email: "", Password: "" });
+
+ 
 
 
-  const [ login,setlogin]=useState([])
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const Dispatch = useDispatch()
 
-const Loginclick = async (e)=>{
-  e.preventDefault();
-  try {
-    const response = await axios.post("http://localhost:3020/api/users/login",{
-      Email:login.Email,
-      Password:login.Password
-    })
 
-  localStorage.setItem("Userdata",JSON.stringify(response.data.details))
+  const Loginclick = async (e) => {
+    e.preventDefault();
+ 
+    if(login.Email === "admin@gmail.com" || login.Password ==="admin"){
+      await Dispatch(adminlogin(login))
+    }else{
+      await Dispatch(userlogin(login))
+    }
+  
+    const userid = localStorage.getItem("id");
+    if(userid){
+      navigate("/")
+    }else{
+      navigate("/login")
+    }
 
-    console.log(response.data.details);
-    setisloged(response.data.details);
-    toast.success(response.data.message)
-    navigate("/")
 
-  } catch (error) {
-    toast.error(error.response.data.message)
-  }
+    const admininfo = localStorage.getItem("admin")
+   if(admininfo){
+      navigate("/adminhome")
+    }else{
+      navigate("/login")
+    }
 
-}
-  // const loginuser = () => {
-  //   const admin = users.find(
-  //     (x) => x.useremail == email && x.userpass == pass && x.role == "admin"
-  //   );
-  //   if(admin){
-  //     setadminnav(admin)
-  //     navigate('/adminhome')
-  //     return true;
-  //   }
-  //   const finduser = users.find(
-  //     (x) => x.useremail == email && x.userpass == pass
-  //   );
-  //   if (finduser) {
-  //     setisuser(finduser);
-  //     setisloged(true);
-  //     if (finduser?.cart) {
-  //       setcart(finduser.cart);
-  //     }
+  };
+  const userid = localStorage.getItem("id");
 
-  //     navigate("/");
-  //   } else {
-  //     alert("not found this useraccount");
-  //   }
-  // };
 
   return (
     <>
-      {isloged ? (
+      {userid ? (
         <Profile />
       ) : (
         <div
@@ -80,7 +56,6 @@ const Loginclick = async (e)=>{
           style={{
             height: "90vh",
             alignItems: "center",
-         
           }}
         >
           <Container
@@ -105,7 +80,7 @@ const Loginclick = async (e)=>{
               }}
               type="text"
               placeholder="Email"
-              onChange={(e) => setlogin({...login,Email:e.target.value})}
+              onChange={(e) => setLogin({ ...login, Email: e.target.value })}
             />
             <input
               style={{
@@ -117,12 +92,13 @@ const Loginclick = async (e)=>{
               }}
               type="password"
               placeholder="Password"
-              onChange={(e) => setlogin({...login,Password:e.target.value})}
+              onChange={(e) => setLogin({ ...login, Password: e.target.value })}
             />
             <br />
+         
 
-            <MDBBtn className="text-ligth" color="black" onClick={Loginclick}>
-              login
+            <MDBBtn className="text-light" color="black" onClick={Loginclick}>
+              Login
             </MDBBtn>
 
             <p style={{ fontSize: "15px", fontFamily: "Satoshi" }}>
@@ -131,9 +107,14 @@ const Loginclick = async (e)=>{
                 <u>Signup?</u>
               </Link>
             </p>
+
+            
           </Container>
+   
         </div>
+      
       )}
+             <Footer/>
     </>
   );
 }

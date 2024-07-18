@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import emailjs from "@emailjs/browser";
 import { MDBBtn } from "mdb-react-ui-kit";
 import "../pages/Contact.css";
+import Footer from "../components/Footer";
 
 function Contact() {
   const form = useRef();
@@ -37,12 +38,28 @@ function Contact() {
   };
 
   return (
-    <div>
+    <>
+    <div style={{ display: "flex", justifyContent: "center" }}>
       <div
         style={{
           display: "flex",
-          justifyContent: "center",
           flexDirection: "column",
+          marginTop: "150px",
+          marginRight: "100px",
+        }}
+      >
+        <h1 style={{ fontSize: "1.5em", boxSizing: "inherit" }}>
+          We are shoezone and we are here to serve! <br />
+          How can we help you?
+        </h1>
+      </div>
+
+      <div
+        style={{
+          width: "700px",
+          display: "flex",
+          justifyContent: "center",
+          marginTop: "50px",
         }}
       >
         <form
@@ -54,35 +71,30 @@ function Contact() {
           ref={form}
           onSubmit={sendEmail}
         >
-          <label>Name</label>
-          <input
-            className="size"
-            type="text"
-            placeholder="Enter your name"
-            name="user_name"
-          />
-          <label>Email</label>
-          <input
-            className="size"
-            type="email"
-            placeholder="Enter your email"
-            name="user_email"
-          />
-          <label>Message</label>
-          <textarea
-            className="size1"
-            placeholder="Type here..."
-            name="user_message"
-          />
+          <div>
+            <h1 style={{ display: "flex", justifyContent: "center" }}>
+              CONTACT US
+            </h1>
+          </div>
+
+          <label className="text1">NAME</label>
+          <input className="size" type="text" name="user_name" />
+          <label className="text1">E-MAIL</label>
+          <input className="size" type="email" name="user_email" />
+          <label className="text1">COMMENT</label>
+          <textarea className="size" name="user_message" />
 
           {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+          <br />
 
-          <MDBBtn className="size" type="submit" value="send">
-            Button
+          <MDBBtn color="black" className="size" type="submit" value="send">
+            SEND MESSAGE
           </MDBBtn>
         </form>
       </div>
     </div>
+    <Footer/>
+    </>
   );
 }
 

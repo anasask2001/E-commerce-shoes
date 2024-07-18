@@ -1,65 +1,131 @@
-import React, { useContext, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Data } from "../App";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteperoductadmin, specificitem, updateproductadmin } from "../Redux/Thunk/Thunk";
+import {
+  MDBContainer,
+  MDBCard,
+  MDBCardBody,
+  MDBCardImage,
+  MDBCardTitle,
+  MDBRow,
+  MDBCol,
+  MDBInput,
+  MDBBtn
+} from "mdb-react-ui-kit";
+
 const Updateitem = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
-  const { Products, setProducts } = useContext(Data);
-  const itemfound = Products.find((x) => x.id == Number(id));
-  const nameRef = useRef("");
-  const imgUrlRef = useRef("");
-  const priceRef = useRef("");
+  const dispatch = useDispatch();
+
+  const [update, Setupdate] = useState({
+    ProductTitle: "",
+    ProductDescription: "",
+    ProductPrice: "",
+    ProductCategory: "",
+    ProductImage: ""
+  });
 
   
-  const navigate = useNavigate();
 
-  const updateitem = () => {
-    const temprryproduct = Products.map((x) =>
-      x.id == Number(id)
-        ? {
-            ...x,
-            name: nameRef.current.value,
-            price: priceRef.current.value,
-            imgUrl: imgUrlRef.current.value,
-          }
-        : x
-    );
-    setProducts(temprryproduct);
-    navigate("/adminproduct");
+  // Update product
+  const updateProduct = (e) => {
+    e.preventDefault(); 
+  
+    dispatch(updateproductadmin({ id, update}))
+    .then(()=> navigate("/adminproduct"))
+   
   };
-  const deleteitem=()=>{
-    const indexofitem = Products.indexOf(itemfound);
-    const temp = Products
-    temp.splice(indexofitem,1);
-    setProducts(temp);
-    navigate("/adminproduct");
 
-  }
+  // Delete product 
+  const deleteProduct = () => {
+    dispatch(deleteperoductadmin(id))
+    .then(()=>navigate("/adminproduct"))
+    console.log("deleted",id);
 
-  const handleclear = ()=>{
-    const clear= nameRef.current.value=('')
-            priceRef.current.value=('')
-       imgUrlRef.current.value=('')
-  }
+  };
+
+  // Fetch specific product
+  useEffect(() => {
+    dispatch(specificitem(id));
+  }, [dispatch, id]);
+
+  const itemfound = useSelector((state) => state.ApiSlice.singleproduct);
+
+  // Update state when item is fetched
+  useEffect(() => {
+    if (itemfound) {
+      Setupdate({
+        ProductTitle: itemfound.ProductTitle || "",
+        ProductDescription: itemfound.ProductDescription || "",
+        ProductPrice: itemfound.ProductPrice || "",
+        ProductCategory: itemfound.ProductCategory || "",
+        // ProductImage: itemfound.ProductImage || ""
+      });
+    }
+  }, [itemfound]);
 
   return (
-    <div>
-            <img src={itemfound.imgUrl} />
-      <div style={{display:'flex'}}>
-      <h1>#{itemfound.id}</h1>
-       <input   type="text" ref={nameRef} defaultValue={itemfound.name} />
-      <br/>
-      <input type="text" ref={imgUrlRef} defaultValue={itemfound.imgUrl} />
-      <br/>
-      <input type="text" ref={priceRef} defaultValue={itemfound.price} />
- 
-      </div>
-      <div  style={{display:'flex'}}>
-      <button onClick={updateitem}>Update</button>
-      <button onClick={handleclear}>Clear</button>
-      <button onClick={deleteitem}>delete</button>
-      </div>
-
-
+    <div style={{ display: "flex", justifyContent: "center" }}>
+      <MDBContainer className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
+        <MDBCard style={{ maxWidth: "800px", width: "100%" }}>
+          <MDBRow className="g-0">
+            <MDBCol md="4">
+              <MDBCardImage src={itemfound.ProductImage} alt="Product Image" className="img-fluid" />
+            </MDBCol>
+            <MDBCol md="8">
+              <MDBCardBody>
+                <MDBCardTitle className="text-center mb-4">Update Product</MDBCardTitle>
+                <form onSubmit={updateProduct}>
+                  <MDBInput
+                    label="Product Title"
+                    type="text"
+                    onChange={(e) => Setupdate({ ...update, ProductTitle: e.target.value })}
+                    value={update.ProductTitle}
+                    className="mb-4"
+                  />
+                  <MDBInput
+                    label="Product Description"
+                    type="text"
+                    onChange={(e) => Setupdate({ ...update, ProductDescription: e.target.value })}
+                    value={update.ProductDescription}
+                    className="mb-4"
+                  />
+                  <MDBInput
+                    label="Product Price"
+                    type="text"
+                    onChange={(e) => Setupdate({ ...update, ProductPrice: e.target.value })}
+                    value={update.ProductPrice}
+                    className="mb-4"
+                  />
+                  <MDBInput
+                    label="Product Category"
+                    type="text"
+                    onChange={(e) => Setupdate({ ...update, ProductCategory: e.target.value })}
+                    value={update.ProductCategory}
+                    className="mb-4"
+                  />
+                  {/* <MDBInput
+                    label="Product Image"
+                    type="file"
+                    onChange={(e) => Setupdate({ ...update, ProductImage: e.target.files[0] })}
+                    className="mb-4"
+                  /> */}
+                  <div className="d-flex justify-content-between">
+                    <MDBBtn color="dark" type="submit">
+                      Update
+                    </MDBBtn>
+                    <MDBBtn color="danger" onClick={deleteProduct}>
+                      Delete
+                    </MDBBtn>
+                  </div>
+                </form>
+              </MDBCardBody>
+            </MDBCol>
+          </MDBRow>
+        </MDBCard>
+      </MDBContainer>
     </div>
   );
 };

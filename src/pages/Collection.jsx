@@ -1,44 +1,70 @@
-import React from 'react'
-import { Data } from '../App'
-import { useContext } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { MDBCard,MDBCardImage,MDBCardBody,MDBCardTitle,MDBCardText,MDBBtn } from 'mdb-react-ui-kit'
-import { Container } from 'react-bootstrap'
-
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import {
+  MDBCard,
+  MDBCardImage,
+  MDBCardBody,
+  MDBCardTitle,
+  MDBCardText,
+  MDBBtn,
+  MDBContainer,
+  MDBRow,
+  MDBCol,
+} from "mdb-react-ui-kit";
+import Footer from "../components/Footer";
+import { Getproducts } from "../Redux/Thunk/Thunk";
 
 function Collection() {
-  const navigate=useNavigate()
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-const{Products,setProducts}=useContext(Data)
+  useEffect(() => {
+    dispatch(Getproducts());
+  }, [dispatch]);
+
+  const products = useSelector((state) => state.ApiSlice.Products.Product);
 
   return (
-    
-    <div style={{display:'flex',flexWrap:'wrap',justifyContent:'space-between', width:'100%'}}>
- 
-      {Products.map((x)=>
-      
-
-      <MDBCard  style={{width:'250px',  marginBottom:'10px', position:'relative'}} >
-           <div className='bg-image hover-zoom'>
-    <MDBCardImage className='w70' src={x.ProductImage} position='top' alt='...' />
-    </div>
-      <MDBCardBody>
-        <MDBCardTitle>{x.ProductTitle}</MDBCardTitle>
-        <p>{'₹'+x.ProductPrice}</p>
-        <MDBCardText>
-       {x.ProductDescription} 
-        </MDBCardText>
-        <MDBBtn color='black' style={{position:'absolute', bottom:'10px'}} onClick={()=>navigate(`/${x._id}`)}>show</MDBBtn>
-      </MDBCardBody>
-    </MDBCard>
-
- 
-      
-      
-      
-      )}
-    </div>
-  )
+    <>
+      <MDBContainer className="my-3">
+        <MDBRow className="g-4">
+          {products?.map((product) => (
+            <MDBCol md="4" key={product._id}>
+              <MDBCard className="h-100 shadow-sm">
+                <div className="bg-image hover-zoom">
+                  <MDBCardImage
+                    top
+                    src={product.ProductImage}
+                    alt={product.ProductTitle}
+                    className="w-100"
+                  />
+                </div>
+                <MDBCardBody className="text-center">
+                  <MDBCardTitle className="mb-3" >
+                    {product.ProductTitle}
+                  </MDBCardTitle>
+                  <MDBCardText className="fw-bold mb-2">
+                    ₹{product.ProductPrice}
+                  </MDBCardText>
+                  <MDBCardText className="text-muted">
+                    {product.ProductDescription}
+                  </MDBCardText>
+                  <MDBBtn
+                    color="dark"
+                    onClick={() => navigate(`/${product._id}`)}
+                  >
+                    View Details
+                  </MDBBtn>
+                </MDBCardBody>
+              </MDBCard>
+            </MDBCol>
+          ))}
+        </MDBRow>
+      </MDBContainer>
+      <Footer />
+    </>
+  );
 }
 
-export default Collection
+export default Collection;

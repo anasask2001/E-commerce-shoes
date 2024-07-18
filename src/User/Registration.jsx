@@ -1,40 +1,39 @@
-import React, { useState } from "react";
+import React, {  useState } from "react";
 import { MDBBtn } from "mdb-react-ui-kit";
-import { Container} from "react-bootstrap";
-import axios from "axios";
+import { Container } from "react-bootstrap";
+import { useDispatch } from "react-redux";
+import { userregister } from "../Redux/Thunk/Thunk";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+import Footer from "../components/Footer";
 
 const Register = () => {
-  const nav = useNavigate()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const [registerData, setRegisterData] = useState([]);
+  const [registerData, setRegisterData] = useState({
+    UserName: "",
+    Email: "",
+    Password: "",
+    ConfirmPassword: "",
+    ProfileImg: "",
+  });
 
   const handleClick = async (e) => {
-    e.preventDefault();
-    try { 
-    const response = await axios.post("http://localhost:3020/api/users/register", {
-      UserName: registerData.UserName,
-      Email: registerData.Email,
-      Password: registerData.Password,
-      ConfirmPassword: registerData.ConfirmPassword
-    });
-   
-   toast.success(response.data.message)
-   nav("/login")
+    e.preventDefault()
+    const formData = new FormData();
+    formData.append("UserName", registerData.UserName);
+    formData.append("Email", registerData.Email);
+    formData.append("Password", registerData.Password);
+    formData.append("ConfirmPassword", registerData.ConfirmPassword);
+    formData.append("image", registerData.ProfileImg);
 
-
-  
-
-    } catch (error) {
-  
-      toast.error(error.response.data.message)
-   
-      
-    }
+    dispatch(userregister(formData))
+    .then(()=>navigate("/login"))
+    
   };
 
   return (
+    <>
     <div className="d-flex" style={{ height: "90vh", alignItems: "center" }}>
       <Container
         style={{
@@ -48,12 +47,10 @@ const Register = () => {
           borderRadius: "20px",
         }}
       >
-         
         <form onSubmit={handleClick}>
           <input
-          required
+            required
             style={{
-
               borderRadius: "5px",
               border: "none",
               paddingLeft: "5px",
@@ -62,15 +59,15 @@ const Register = () => {
             }}
             type="text"
             placeholder="UserName"
-            onChange={(e) => setRegisterData({ ...registerData, UserName: e.target.value })}
+            onChange={(e) =>
+              setRegisterData({ ...registerData, UserName: e.target.value })
+            }
           />
 
           <br />
 
           <input
-           
-          required
-
+            required
             style={{
               borderRadius: "5px",
               border: "none",
@@ -80,13 +77,15 @@ const Register = () => {
             }}
             type="email"
             placeholder="Email"
-            onChange={(e) => setRegisterData({ ...registerData, Email: e.target.value })}
+            onChange={(e) =>
+              setRegisterData({ ...registerData, Email: e.target.value })
+            }
           />
 
           <br />
 
           <input
-          required
+            required
             placeholder="Password"
             style={{
               borderRadius: "5px",
@@ -96,13 +95,15 @@ const Register = () => {
               width: "40vh",
             }}
             type="password"
-            onChange={(e) => setRegisterData({ ...registerData, Password: e.target.value })}
+            onChange={(e) =>
+              setRegisterData({ ...registerData, Password: e.target.value })
+            }
           />
 
           <br />
 
           <input
-          required
+            required
             placeholder="Confirm Password"
             style={{
               borderRadius: "5px",
@@ -112,7 +113,24 @@ const Register = () => {
               width: "40vh",
             }}
             type="password"
-            onChange={(e) => setRegisterData({ ...registerData, ConfirmPassword: e.target.value })}
+            onChange={(e) =>
+              setRegisterData({
+                ...registerData,
+                ConfirmPassword: e.target.value,
+              })
+            }
+          />
+
+          <br />
+
+          <input
+            type="file"
+            onChange={(e) =>
+              setRegisterData({
+                ...registerData,
+                ProfileImg: e.target.files[0],
+              })
+            }
           />
 
           <div
@@ -129,7 +147,10 @@ const Register = () => {
           </div>
         </form>
       </Container>
+
     </div>
+   <Footer/>
+    </>
   );
 };
 

@@ -1,18 +1,13 @@
 import React from "react";
 import { Container } from "react-bootstrap";
-import {
-  MDBCard,
-  MDBCardTitle,
-  MDBCardText,
-  MDBCardOverlay,
-  MDBCardImage,
-} from "mdb-react-ui-kit";
 import { FaLeaf } from "react-icons/fa";
 import { FaCat } from "react-icons/fa";
 import { FaHands } from "react-icons/fa";
-import ads from '../pages/Ads1.mp4'
+import ads from "../pages/Ads1.mp4";
+import Footer from "../components/Footer";
 function Ourstory() {
   return (
+    <>
     <div>
       <div
         style={{
@@ -45,8 +40,6 @@ function Ourstory() {
           on both the world and the people
         </h3>
       </div>
-      
-
 
       <Container
         style={{
@@ -63,13 +56,7 @@ function Ourstory() {
             height: "0",
           }}
         >
-          <video
-            
-            autoPlay
-            muted
-            loop
-            style={{ width: "100%", height: "auto" }}
-          >
+          <video autoPlay muted loop style={{ width: "100%", height: "auto" }}>
             <source src={ads} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
@@ -189,6 +176,8 @@ function Ourstory() {
         </div>
       </div>
     </div>
+    <Footer/>
+    </>
   );
 }
 

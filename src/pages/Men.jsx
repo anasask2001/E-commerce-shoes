@@ -1,44 +1,56 @@
-import React, { useContext } from 'react'
-import { Data } from '../App';
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
   MDBCard,
+  MDBCardImage,
   MDBCardBody,
   MDBCardTitle,
   MDBCardText,
-  MDBCardImage,
-  MDBBtn
-} from 'mdb-react-ui-kit';
-import { useNavigate } from 'react-router-dom';
-
+  MDBBtn,
+} from "mdb-react-ui-kit";
+import { Getproducts } from "../Redux/Thunk/Thunk";
+import Footer from "../components/Footer";
+import './Men.css';
 
 function Men() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const navigate=useNavigate()
-const {Products,setProducts} = useContext(Data)
+  useEffect(() => {
+    dispatch(Getproducts());
+  }, [dispatch]);
+
+  const products = useSelector((state) => state.ApiSlice.Products.Product);
+
   return (
-<>
-
-    <div   style={{display:'flex',flexWrap:'wrap',justifyContent:'space-between', width:'100%'}}>
-    {Products.map((x)=>{if(x.ProductCategory=='MEN' || x.ProductCategory === 'KIDS_BOYS') { 
-      return(
-    
-    <MDBCard   style={{width:'250px',  marginBottom:'10px' ,position:'relative'}} >
-      <div className='bg-image hover-zoom'>
-    <MDBCardImage className='w70' src={x.ProductImage} position='top' alt='...' />
-    </div>
-    <MDBCardBody >
-      <MDBCardTitle>{x.ProductTitle}</MDBCardTitle>
-      <p>{'₹'+x.ProductPrice}</p>
-      <MDBCardText>
-      {x.ProductDescription}
-      </MDBCardText>
-      <MDBBtn color='black' style={{position:'absolute', bottom:'10px'}} onClick={()=>navigate(`/${x._id}`)}>show</MDBBtn>
-    </MDBCardBody>
-  </MDBCard>)
-    }})}
-  </div>
-</>
-  )
+    <>
+      <div className="product-container">
+        {products?.map((x) => {
+          if (x.ProductCategory === "MEN") {
+            return (
+              <MDBCard key={x._id} className="product-card"   onClick={() => navigate(`/${x._id}`)}>
+                <MDBCardImage
+                  src={x.ProductImage}
+                  position="top"
+                  alt={x.ProductTitle}
+                  className="product-image"
+                />
+                <MDBCardBody>
+                  <MDBCardTitle className="product-title">{x.ProductTitle}</MDBCardTitle>
+                  <MDBCardText className="product-price"><b>{"₹" + x.ProductPrice}</b></MDBCardText>
+                  <MDBCardText className="product-description">{x.ProductDescription}</MDBCardText>
+                
+                </MDBCardBody>
+              </MDBCard>
+            );
+          }
+          return null; 
+        })}
+      </div>
+      <Footer />
+    </>
+  );
 }
 
-export default Men
+export default Men;
