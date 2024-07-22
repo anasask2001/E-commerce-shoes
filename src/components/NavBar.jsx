@@ -11,7 +11,7 @@ import {
   MDBBtn,
   MDBInputGroup,
   MDBCollapse,
-  MDBSwitch
+  MDBSwitch 
 } from "mdb-react-ui-kit";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FaUser, FaShoppingCart, FaHeart } from "react-icons/fa";

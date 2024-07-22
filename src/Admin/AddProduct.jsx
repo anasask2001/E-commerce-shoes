@@ -41,7 +41,7 @@ function AddProduct() {
 
   return (
     <div style={{ display: "flex", justifyContent: "center" }}>
-    <MDBContainer className="d-flex justify-content-center align-items-center" style={{ height: "100vh" ,backgroundColor:"blue"}}>
+    <MDBContainer className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
         <MDBRow>
           <MDBCol md="12">
             <h2 className="text-center mb-4">Add New Product</h2>
